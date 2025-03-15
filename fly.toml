@@ -6,18 +6,39 @@
 app = 'mw-skybridge'
 primary_region = 'atl'
 
-[build]
+[env]
+FLY_SWAP = 'true'
+SKYBRIDGE_ALLOW_BACKFILL = 'true'
+SKYBRIDGE_AUTH_PASSWORD = '1447096'
+SKYBRIDGE_BASEURL = 'mw-skybridge.fly.dev'
+SKYBRIDGE_REQUIRE_AUTH_PASSWORD = 'true'
+SKYBRIDGE_SECRET = '1447096'
+SKYBRIDGE_SHOW_INDEX = 'true'
+
+[[mounts]]
+source = 'skybridge_data'
+destination = '/app/database'
 
 [http_service]
-  internal_port = 8080
-  force_https = true
-  auto_stop_machines = 'stop'
-  auto_start_machines = true
-  min_machines_running = 0
-  processes = ['app']
+internal_port = 8080
+force_https = true
+auto_stop_machines = 'stop'
+auto_start_machines = true
+min_machines_running = 0
+
+[http_service.concurrency]
+type = 'requests'
+hard_limit = 999999
+soft_limit = 9999
+
+[[http_service.checks]]
+interval = '30s'
+timeout = '5s'
+grace_period = '30s'
+method = 'GET'
+path = '/api/v2/instance'
 
 [[vm]]
-  memory = '256mb'
-  cpu_kind = 'shared'
-  cpus = 1
-  memory_mb = 256
+memory = '256mb'
+cpu_kind = 'shared'
+cpus = 1
