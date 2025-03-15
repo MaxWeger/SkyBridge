@@ -3,46 +3,42 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 # new updated
-
-app = 'mw-skybridge'  #you need to rename it
-primary_region = 'lhr'
-
-[build]
-image = "videah/skybridge:latest"
-
-[http_service]
-  internal_port = 8080
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-  min_machines_running = 0
+app = 'mw-skybridge’
+primary_region = 'atl'
 
 [env]
-  SKYBRIDGE_BASEURL = 'mskybridge.fly.dev' #you need to rename it using your app name .fly.dev
-  SKYBRIDGE_SHOW_INDEX = 'true'
-  FLY_SWAP = 'true'
-  SKYBRIDGE_SECRET='1447096' #you need to fill it, I taped random numbers and it worked
-  SKYBRIDGE_REQUIRE_AUTH_PASSWORD = true
-  SKYBRIDGE_AUTH_PASSWORD = '1447096' #if above is true, it will be asked when you'll try to log in to you bsky account in the app
-  SKYBRIDGE_ALLOW_BACKFILL = true
+FLY_SWAP = 'true'
+SKYBRIDGE_ALLOW_BACKFILL = 'true'
+SKYBRIDGE_AUTH_PASSWORD = '1447096'
+SKYBRIDGE_BASEURL = mw-skybridge.fly.dev
+SKYBRIDGE_REQUIRE_AUTH_PASSWORD = 'true'
+SKYBRIDGE_SECRET = '1447096'
+SKYBRIDGE_SHOW_INDEX = 'true'
 
 [[mounts]]
-  source = 'skybridge_data'
-  destination = '/app/database'
+source = 'skybridge_data'
+destination = '/app/database'
 
-[[http_service.checks]]
-  grace_period = "30s"
-  interval = "30s"
-  method = "GET"
-  timeout = "5s"
-  path = "/api/v2/instance"
+[http_service]
+internal_port = 8080
+force_https = true
+auto_stop_machines = 'stop'
+auto_start_machines = true
+min_machines_running = 0
 
 [http_service.concurrency]
-  type = "requests"
-  hard_limit = 999999
-  soft_limit = 9999
+type = 'requests'
+hard_limit = 999999
+soft_limit = 9999
+
+[[http_service.checks]]
+interval = '30s'
+timeout = '5s'
+grace_period = '30s'
+method = 'GET'
+path = '/api/v2/instance'
 
 [[vm]]
-  memory = '256mb'
-  cpu_kind = 'shared'
-  cpus = 1
+memory = '256mb'
+cpu_kind = 'shared'
+cpus = 1
